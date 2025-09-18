@@ -1,0 +1,22 @@
+# Location of the GraphQL schema
+schema:
+  - graph/schema.graphqls
+
+# Where the generated code will live
+exec:
+  filename: graph/generated/generated.go
+  package: generated
+
+# Where models get placed
+model:
+  filename: graph/models_gen.go
+  package: graph
+
+# Resolver config
+resolver:
+  layout: follow-schema
+  dir: graph/resolvers
+  package: resolvers
+
+# Optional: omit slices of pointers (nicer with GORM)
+omit_slice_element_pointers: true

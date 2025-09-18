@@ -1,178 +1,277 @@
 # Ontology-as-a-Service (OaaS)
 
-**A backend platform in Go that models, queries, and reasons about entities, inspired by Neo-Aristotelian metaphysics (E. J. Lowe’s four-category ontology).**
+**A backend platform in Go that models, queries, and reasons about entities, inspired by Neo-Aristotelian metaphysics (E. J. Lowe's four-category ontology).**
+
+[![Go Version](https://img.shields.io/badge/Go-1.25-blue.svg)](https://golang.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen.svg)](#testing)
 
 ---
 
-## 📖 Philosophical Background
+## 🎯 Overview
 
-This project is inspired by **E. J. Lowe (1945–2014)**, a leading Neo-Aristotelian metaphysician.  
-Lowe developed a **Four-Category Ontology**, reviving and formalizing Aristotelian ideas for contemporary analytic philosophy.  
+OaaS implements **E. J. Lowe's Four-Category Ontology** as a modern knowledge graph backend, enabling:
 
-In his system, reality is structured around:  
+- **Entity Modeling**: Substances, kinds, attributes, and modes as first-class objects
+- **Causal Reasoning**: Aristotelian causes (material, formal, efficient, final)
+- **Potentiality → Actuality**: Track and reason about what entities can become
+- **Modern APIs**: REST, GraphQL, and real-time WebSocket support
 
-1. **Substances** – independent entities (e.g., a tree, a person).  
-2. **Kinds** – natural classifications (e.g., oak, human).  
-3. **Attributes** – general properties (e.g., color, weight).  
-4. **Modes** – particular ways a substance instantiates an attribute (e.g., *this tree’s green leaf*).  
+## 📖 Philosophical Foundation
 
-This project translates these categories into a modern **knowledge graph backend**, with APIs to create, relate, and query them. It also integrates Aristotelian notions of **essence, potentiality/actuality, and the four causes (material, formal, efficient, final).**
+Based on **E. J. Lowe (1945–2014)**, a leading Neo-Aristotelian metaphysician, the system models reality through four categories:
 
----
+1. **Substances** – Independent entities (e.g., a tree, a person)
+2. **Kinds** – Natural classifications (e.g., oak, human)  
+3. **Attributes** – General properties (e.g., color, weight)
+4. **Modes** – Particular instantiations (e.g., *this tree's green leaf*)
 
-## 🚀 Features
+The system integrates Aristotelian notions of **essence, potentiality/actuality, and the four causes**.
 
-- **Entity Modeling**  
-  - Substances, kinds, attributes, and modes as first-class objects.  
-  - Go structs and database persistence.  
+## 🚀 Quick Start
 
-- **Causal Network**  
-  - Store and query causal relations (material, formal, efficient, final).  
-  - Track *potentiality → actuality* transitions.  
+### Prerequisites
+- Go 1.25+
+- Docker & Docker Compose
+- Make
 
-- **APIs**  
-  - REST and GraphQL endpoints.  
-  - gRPC for distributed systems.  
-  - WebSockets for real-time actualization events.  
+### Installation
 
-- **Storage**  
-  - PostgreSQL for structured entities.  
-  - Neo4j/Dgraph (optional) for causal graph.  
+```bash
+# Clone the repository
+git clone https://github.com/apodicticscott/oaas.git
+cd oaas
 
-- **Deployment**  
-  - Docker + Kubernetes ready.  
-  - Configurable via YAML/JSON.  
+# Start services
+make docker-up
 
----
+# Run migrations
+make migrate-up
+
+# Start the server
+make run
+```
+
+### Test the API
+
+```bash
+# Health check
+curl http://localhost:8080/health
+
+# Create a substance
+curl -X POST http://localhost:8080/api/v1/substances \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Socrates",
+    "kind": "Human",
+    "essence": "Rational being with potentiality for wisdom"
+  }'
+```
 
 ## 🛠 Tech Stack
 
-- **Language**: Go (Golang)  
-- **Framework**: Gin (REST), gqlgen (GraphQL)  
-- **Database**: PostgreSQL + Neo4j  
-- **Infra**: Docker, Kubernetes, gRPC, WebSockets  
-
----
+| Component | Technology |
+|-----------|------------|
+| **Language** | Go 1.25+ |
+| **Web Framework** | Gin (REST) |
+| **GraphQL** | gqlgen |
+| **Database** | PostgreSQL |
+| **ORM** | GORM |
+| **Containerization** | Docker |
+| **Testing** | testify, httptest |
 
 ## 📂 Project Structure
 
 ```
 oaas/
-│── cmd/
-│   └── server/         # Main Go server
-│── internal/
-│   ├── entities/       # Go structs (Substances, Attributes, Modes, etc.)
-│   ├── causality/      # Potentiality → Actuality engine
-│   ├── persistence/    # DB layer
-│   └── api/            # REST + GraphQL handlers
-│── migrations/         # SQL migrations
-│── docker/             # Docker/K8s configs
-│── configs/            # App configs
-│── tests/              # Unit + integration tests
-│── README.md
-│── go.mod
-│── Dockerfile
+├── cmd/server/           # Main application
+├── internal/
+│   ├── entities/         # Neo-Aristotelian entities
+│   ├── causality/        # Potentiality → Actuality engine
+│   ├── persistence/      # Database layer
+│   └── api/             # REST/GraphQL handlers
+├── graph/               # GraphQL schema & resolvers
+├── db/migrations/       # Database migrations
+├── tests/              # Comprehensive test suite
+├── docker/             # Docker configuration
+└── makefile           # Build & development commands
 ```
 
----
+## 🧪 Testing
 
-## 📌 Example API Usage
+### Quick Testing
 
-### Create a Substance
 ```bash
-POST /api/v1/entities
-{
-  "name": "Tree-001",
-  "kind": "Oak",
-  "essence": "Living organism with potentiality for growth"
-}
+# Run all tests
+make test
+
+# Run with coverage
+make test-coverage
+
+# Run specific test categories
+make test-entities      # Test Neo-Aristotelian entities
+make test-causality     # Test potentiality → actuality
+make test-philosophical # Test complete philosophical flow
+make benchmark          # Performance benchmarks
 ```
 
-### Retrieve Four Causes
+### Test Categories
+
+- **Unit Tests**: Individual entity and function testing
+- **Integration Tests**: API endpoint testing  
+- **Philosophical Tests**: Neo-Aristotelian ontology validation
+- **Performance Tests**: Benchmark and load testing
+
+## 📌 API Examples
+
+### Complete Neo-Aristotelian Flow
+
 ```bash
-GET /api/v1/causes/Tree-001
+# 1. Create a substance (independent entity)
+curl -X POST http://localhost:8080/api/v1/substances \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Socrates",
+    "kind": "Human",
+    "essence": "Rational being with potentiality for wisdom"
+  }'
+
+# 2. Create a mode (particular instantiation)
+curl -X POST http://localhost:8080/api/v1/modes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "value": "courageous",
+    "substance_id": "SUBSTANCE_ID",
+    "attribute_id": "attr-2"
+  }'
+
+# 3. Add the four Aristotelian causes
+curl -X POST http://localhost:8080/api/v1/causes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "from_entity": "SUBSTANCE_ID",
+    "to_entity": "flesh_bone_soul",
+    "cause_type": "material"
+  }'
+
+# 4. Create a potentiality
+curl -X POST http://localhost:8080/api/v1/potentialities \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Achieve Wisdom",
+    "description": "Socrates can achieve philosophical wisdom",
+    "conditions": "[{\"type\":\"mode\",\"name\":\"virtue\",\"value\":\"courageous\"}]",
+    "substance_id": "SUBSTANCE_ID"
+  }'
+
+# 5. Actualize the potentiality
+curl -X POST http://localhost:8080/api/v1/potentialities/POTENTIALITY_ID/actualize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Socrates achieved wisdom through philosophical inquiry"
+  }'
 ```
 
-Response:
-```json
-{
-  "material": "Wood, water, carbon",
-  "formal": "Oak tree essence",
-  "efficient": "Growth from seed + sunlight + soil",
-  "final": "Provide shade, oxygen, ecosystem role"
-}
-```
+### GraphQL
 
-### Actualize a Potential
-```bash
-POST /api/v1/actualize/Tree-001
-{
-  "potential": "Grow leaves",
-  "conditions": ["spring", "sunlight", "water"]
-}
-```
-
----
-
-## 🌐 GraphQL Example
+Visit **http://localhost:8080/playground** for interactive GraphQL exploration.
 
 ```graphql
 query {
-  substance(id: "Tree-001") {
+  substances {
+    id
     name
     kind
     essence
-    attributes {
-      name
+    modes {
       value
+      attribute { name }
+    }
+    potentialities {
+      name
+      description
+    }
+    actualities {
+      description
+      actualizedAt
     }
     causes {
-      type
-      fromEntity
+      causeType
+      toEntity
     }
   }
 }
 ```
 
----
+## 🔧 Development
 
-## 🌳 Example Diagram
+### Available Commands
 
-```mermaid
-graph TD
-  A[Substance: Tree-001] --> B[Essence: Oak tree]
-  B --> C[Potentiality: Grow leaves]
-  C --> D[Actualized: Tree with leaves]
-
-  A -->|Material Cause| E[Wood, water, carbon]
-  A -->|Formal Cause| B
-  A -->|Efficient Cause| F[Sunlight, soil, time]
-  A -->|Final Cause| G[Provide shade, oxygen]
+```bash
+make help              # Show all available commands
+make run               # Start the server
+make build             # Build the binary
+make docker-up         # Start Docker services
+make docker-down       # Stop Docker services
+make gqlgen            # Regenerate GraphQL code
+make test              # Run all tests
+make test-coverage     # Run tests with coverage
+make benchmark         # Run performance tests
 ```
----
 
-## 🔬 Example Use Cases
+### Database Management
 
-- **Knowledge Graphs**: scientific theories, research taxonomies.  
-- **Philosophy-in-Tech Demo**: metaphysical concepts mapped into backend design.  
-- **Educational Tools**: visualize Aristotle + Lowe’s metaphysics.  
-- **AI Reasoning Layer**: plug causal networks into ML/AI reasoning pipelines.  
+```bash
+make psql              # Access PostgreSQL directly
+make reset-db          # Reset database (CAUTION!)
+```
 
----
+## 🌐 API Endpoints
 
-## 📖 References
+### REST API
 
-- E. J. Lowe, *The Four-Category Ontology: A Metaphysical Foundation for Natural Science* (2006).  
-- Kit Fine, *Essence and Modality*.  
-- David Oderberg, *Real Essentialism*.  
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | Health check |
+| `GET` | `/api/v1/substances` | List all substances |
+| `POST` | `/api/v1/substances` | Create substance |
+| `GET` | `/api/v1/substances/:id` | Get substance by ID |
+| `POST` | `/api/v1/modes` | Create mode |
+| `POST` | `/api/v1/causes` | Add causal relation |
+| `POST` | `/api/v1/potentialities` | Create potentiality |
+| `POST` | `/api/v1/potentialities/:id/actualize` | Actualize potentiality |
 
----
+### GraphQL
+
+- **Playground**: `http://localhost:8080/playground`
+- **Endpoint**: `http://localhost:8080/query`
+
+## 🔬 Use Cases
+
+- **Knowledge Graphs**: Scientific theories, research taxonomies
+- **Philosophy-in-Tech**: Metaphysical concepts in backend design
+- **Educational Tools**: Visualize Aristotle + Lowe's metaphysics
+- **AI Reasoning**: Causal networks for ML/AI reasoning pipelines
+
+## 📚 References
+
+- E. J. Lowe, *The Four-Category Ontology: A Metaphysical Foundation for Natural Science* (2006)
+- Kit Fine, *Essence and Modality*
+- David Oderberg, *Real Essentialism*
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🧑‍💻 Resume Pitch
 
-**Ontology-as-a-Service (OaaS)** – Backend system in **Go** implementing **E. J. Lowe’s Neo-Aristotelian Four-Category Ontology**.  
-- Modeled substances, kinds, attributes, and modes with Postgres/Neo4j.  
-- Built a reasoning engine for potentiality → actuality transitions.  
-- Designed REST + GraphQL APIs for querying entities and Aristotelian causes.  
-- Deployed with Docker + Kubernetes; supports gRPC + WebSockets.  
-- Bridges **philosophy and distributed backend design** in a unique way.  
+**Ontology-as-a-Service (OaaS)** – Backend system in **Go** implementing **E. J. Lowe's Neo-Aristotelian Four-Category Ontology**.
+- Modeled substances, kinds, attributes, and modes with PostgreSQL
+- Built a reasoning engine for potentiality → actuality transitions  
+- Designed REST + GraphQL APIs for querying entities and Aristotelian causes
+- Deployed with Docker; supports real-time WebSocket events
+- Bridges **philosophy and distributed backend design** in a unique way
+
+---
+
+**Built with ❤️ and philosophical rigor**

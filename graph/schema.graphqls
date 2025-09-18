@@ -1,0 +1,132 @@
+# Core Neo-Aristotelian Four-Category Ontology
+
+type Kind {
+  id: ID!
+  name: String!
+  description: String
+  createdAt: String!
+  substances: [Substance!]!
+}
+
+type Attribute {
+  id: ID!
+  name: String!
+  description: String
+  dataType: String!
+  createdAt: String!
+  substances: [Substance!]!
+  modes: [Mode!]!
+}
+
+type Substance {
+  id: ID!
+  name: String!
+  kind: String!
+  essence: String!
+  createdAt: String!
+  attributes: [Attribute!]!
+  modes: [Mode!]!
+  potentialities: [Potentiality!]!
+  actualities: [Actuality!]!
+  causes: [CausalRelation!]!
+}
+
+type Mode {
+  id: ID!
+  value: String!
+  createdAt: String!
+  substance: Substance!
+  attribute: Attribute!
+}
+
+type CausalRelation {
+  id: ID!
+  causeType: String! # material, formal, efficient, final
+  fromEntity: ID!
+  toEntity: ID!
+  createdAt: String!
+}
+
+type Potentiality {
+  id: ID!
+  name: String!
+  description: String
+  conditions: String # JSON string of required conditions
+  createdAt: String!
+  substance: Substance!
+}
+
+type Actuality {
+  id: ID!
+  description: String!
+  actualizedAt: String!
+  substance: Substance!
+  potentiality: Potentiality!
+}
+
+# Queries
+type Query {
+  # Substances
+  substance(id: ID!): Substance
+  substances: [Substance!]!
+  
+  # Kinds
+  kind(id: ID!): Kind
+  kinds: [Kind!]!
+  
+  # Attributes
+  attribute(id: ID!): Attribute
+  attributes: [Attribute!]!
+  
+  # Modes
+  mode(id: ID!): Mode
+  modes: [Mode!]!
+  
+  # Causal Relations
+  causalRelation(id: ID!): CausalRelation
+  causalRelations: [CausalRelation!]!
+  
+  # Potentialities
+  potentiality(id: ID!): Potentiality
+  potentialities: [Potentiality!]!
+  
+  # Actualities
+  actuality(id: ID!): Actuality
+  actualities: [Actuality!]!
+}
+
+# Mutations
+type Mutation {
+  # Substances
+  createSubstance(name: String!, kind: String!, essence: String!): Substance!
+  updateSubstance(id: ID!, name: String, kind: String, essence: String): Substance!
+  deleteSubstance(id: ID!): Boolean!
+  
+  # Kinds
+  createKind(name: String!, description: String): Kind!
+  updateKind(id: ID!, name: String, description: String): Kind!
+  deleteKind(id: ID!): Boolean!
+  
+  # Attributes
+  createAttribute(name: String!, description: String, dataType: String!): Attribute!
+  updateAttribute(id: ID!, name: String, description: String, dataType: String): Attribute!
+  deleteAttribute(id: ID!): Boolean!
+  
+  # Modes
+  createMode(value: String!, substanceId: ID!, attributeId: ID!): Mode!
+  updateMode(id: ID!, value: String): Mode!
+  deleteMode(id: ID!): Boolean!
+  
+  # Causal Relations
+  addCause(fromEntity: ID!, toEntity: ID!, causeType: String!): CausalRelation!
+  removeCause(id: ID!): Boolean!
+  
+  # Potentialities
+  createPotentiality(name: String!, description: String, conditions: String, substanceId: ID!): Potentiality!
+  updatePotentiality(id: ID!, name: String, description: String, conditions: String): Potentiality!
+  deletePotentiality(id: ID!): Boolean!
+  
+  # Actualities (Potentiality → Actuality transitions)
+  actualizePotentiality(potentialityId: ID!, description: String!): Actuality!
+  deleteActuality(id: ID!): Boolean!
+}
