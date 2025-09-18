@@ -124,48 +124,329 @@ make benchmark          # Performance benchmarks
 
 ## 📌 API Examples
 
-### Complete Neo-Aristotelian Flow
+### Health Check
+
+```bash
+# Check API health
+curl -X GET http://localhost:8080/health
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "message": "OaaS API is running"
+}
+```
+
+### Core Entities
+
+#### Substances (Independent Entities)
+
+```bash
+# Get all substances
+curl -X GET http://localhost:8080/api/v1/substances
+
+# Get specific substance by ID
+curl -X GET http://localhost:8080/api/v1/substances/{substance_id}
+
+# Create a new substance
+curl -X POST http://localhost:8080/api/v1/substances \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Socrates",
+    "kind": "Human", 
+    "essence": "Rational being with potentiality for wisdom"
+  }'
+
+# Update a substance
+curl -X PUT http://localhost:8080/api/v1/substances/{substance_id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Socrates the Wise",
+    "kind": "Human",
+    "essence": "Rational being who achieved wisdom"
+  }'
+
+# Delete a substance
+curl -X DELETE http://localhost:8080/api/v1/substances/{substance_id}
+```
+
+**Sample Response:**
+```json
+{
+  "id": "61ed27a3-7024-416c-a1ba-52165142dc1b",
+  "name": "Socrates",
+  "kind": "Human",
+  "essence": "Rational being with potentiality for wisdom",
+  "created_at": "2025-09-18T01:24:30.59444Z",
+  "modes": [
+    {
+      "id": "79d383a2-6938-4502-8c1d-52a0e45e8ea9",
+      "value": "courageous",
+      "created_at": "2025-09-18T01:29:04.056296Z",
+      "substance_id": "61ed27a3-7024-416c-a1ba-52165142dc1b",
+      "attribute_id": "a024a9cb-73a9-44a4-ba14-97026d970bb7"
+    }
+  ]
+}
+```
+
+#### Kinds (Natural Classifications)
+
+```bash
+# Get all kinds
+curl -X GET http://localhost:8080/api/v1/kinds
+
+# Create a new kind
+curl -X POST http://localhost:8080/api/v1/kinds \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Dog",
+    "description": "A domesticated canine animal"
+  }'
+```
+
+**Sample Response:**
+```json
+{
+  "kinds": [
+    {
+      "id": "2536ba77-2f15-4c8b-85fb-22065374ad7f",
+      "name": "Dog",
+      "description": "A domesticated canine animal",
+      "created_at": "2025-09-18T01:30:55.926727663Z"
+    }
+  ]
+}
+```
+
+#### Attributes (General Properties)
+
+```bash
+# Get all attributes
+curl -X GET http://localhost:8080/api/v1/attributes
+
+# Create a new attribute
+curl -X POST http://localhost:8080/api/v1/attributes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "height",
+    "description": "Vertical measurement",
+    "data_type": "number"
+  }'
+```
+
+**Sample Response:**
+```json
+{
+  "attributes": [
+    {
+      "id": "48d1e590-c4c7-42be-90f3-443a34cdb155",
+      "name": "height",
+      "description": "Vertical measurement",
+      "data_type": "number",
+      "created_at": "2025-09-18T01:30:53.840236937Z"
+    }
+  ]
+}
+```
+
+#### Modes (Particular Instantiations)
+
+```bash
+# Get all modes
+curl -X GET http://localhost:8080/api/v1/modes
+
+# Create a new mode
+curl -X POST http://localhost:8080/api/v1/modes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "value": "courageous",
+    "substance_id": "61ed27a3-7024-416c-a1ba-52165142dc1b",
+    "attribute_id": "a024a9cb-73a9-44a4-ba14-97026d970bb7"
+  }'
+```
+
+**Sample Response:**
+```json
+{
+  "modes": [
+    {
+      "id": "79d383a2-6938-4502-8c1d-52a0e45e8ea9",
+      "value": "courageous",
+      "created_at": "2025-09-18T01:29:04.056296Z",
+      "substance_id": "61ed27a3-7024-416c-a1ba-52165142dc1b",
+      "attribute_id": "a024a9cb-73a9-44a4-ba14-97026d970bb7",
+      "substance": {
+        "id": "61ed27a3-7024-416c-a1ba-52165142dc1b",
+        "name": "Socrates",
+        "kind": "Human",
+        "essence": "Rational being with potentiality for wisdom",
+        "created_at": "2025-09-18T01:24:30.59444Z"
+      },
+      "attribute": {
+        "id": "a024a9cb-73a9-44a4-ba14-97026d970bb7",
+        "name": "virtue",
+        "description": "Moral excellence and character",
+        "data_type": "string",
+        "created_at": "2025-09-18T01:28:59.961002Z"
+      }
+    }
+  ]
+}
+```
+
+### Causality & Potentiality
+
+#### Aristotelian Causes
+
+```bash
+# Add a causal relation
+curl -X POST http://localhost:8080/api/v1/causes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "from_entity": "61ed27a3-7024-416c-a1ba-52165142dc1b",
+    "to_entity": "philosophical_inquiry",
+    "cause_type": "efficient"
+  }'
+
+# Get causes for a substance
+curl -X GET http://localhost:8080/api/v1/substances/{substance_id}/causes
+```
+
+**Sample Response:**
+```json
+{
+  "efficient": "philosophical_inquiry"
+}
+```
+
+#### Potentialities & Actualities
+
+```bash
+# Get all potentialities
+curl -X GET http://localhost:8080/api/v1/potentialities
+
+# Create a potentiality
+curl -X POST http://localhost:8080/api/v1/potentialities \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Achieve Wisdom",
+    "description": "Socrates can achieve philosophical wisdom through inquiry",
+    "conditions": "[{\"type\":\"mode\",\"name\":\"virtue\",\"value\":\"courageous\"}]",
+    "substance_id": "61ed27a3-7024-416c-a1ba-52165142dc1b"
+  }'
+
+# Check if potentiality can be actualized
+curl -X GET http://localhost:8080/api/v1/potentialities/{potentiality_id}/conditions
+
+# Actualize a potentiality
+curl -X POST http://localhost:8080/api/v1/potentialities/{potentiality_id}/actualize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Socrates achieved wisdom through philosophical inquiry and courageous questioning"
+  }'
+
+# Get substance evolution
+curl -X GET http://localhost:8080/api/v1/substances/{substance_id}/evolution
+```
+
+**Sample Responses:**
+
+*Potentiality Creation:*
+```json
+{
+  "id": "c461b7ac-bb5c-4d08-97bf-419207ac28ee",
+  "name": "Achieve Wisdom",
+  "description": "Socrates can achieve philosophical wisdom through inquiry",
+  "conditions": "[{\"type\":\"mode\",\"name\":\"virtue\",\"value\":\"courageous\"}]",
+  "created_at": "2025-09-18T01:31:12.765685Z",
+  "substance_id": "61ed27a3-7024-416c-a1ba-52165142dc1b"
+}
+```
+
+*Condition Check:*
+```json
+{
+  "can_actualize": true,
+  "unmet_conditions": null
+}
+```
+
+*Actuality Creation:*
+```json
+{
+  "id": "b81aff87-28fb-4d97-b772-20b850d9455c",
+  "description": "Socrates achieved wisdom through philosophical inquiry and courageous questioning",
+  "actualized_at": "2025-09-18T01:33:18.636639431Z",
+  "substance_id": "61ed27a3-7024-416c-a1ba-52165142dc1b",
+  "potentiality_id": "c461b7ac-bb5c-4d08-97bf-419207ac28ee"
+}
+```
+
+### Complete Neo-Aristotelian Flow Example
+
+Here's a complete example demonstrating the full philosophical flow:
 
 ```bash
 # 1. Create a substance (independent entity)
-curl -X POST http://localhost:8080/api/v1/substances \
+SUBSTANCE_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/substances \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Socrates",
     "kind": "Human",
     "essence": "Rational being with potentiality for wisdom"
-  }'
+  }')
 
-# 2. Create a mode (particular instantiation)
+SUBSTANCE_ID=$(echo $SUBSTANCE_RESPONSE | jq -r '.id')
+
+# 2. Create an attribute (general property)
+ATTRIBUTE_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/attributes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "virtue",
+    "description": "Moral excellence and character",
+    "data_type": "string"
+  }')
+
+ATTRIBUTE_ID=$(echo $ATTRIBUTE_RESPONSE | jq -r '.id')
+
+# 3. Create a mode (particular instantiation)
 curl -X POST http://localhost:8080/api/v1/modes \
   -H "Content-Type: application/json" \
-  -d '{
-    "value": "courageous",
-    "substance_id": "SUBSTANCE_ID",
-    "attribute_id": "attr-2"
-  }'
+  -d "{
+    \"value\": \"courageous\",
+    \"substance_id\": \"$SUBSTANCE_ID\",
+    \"attribute_id\": \"$ATTRIBUTE_ID\"
+  }"
 
-# 3. Add the four Aristotelian causes
+# 4. Add Aristotelian causes
 curl -X POST http://localhost:8080/api/v1/causes \
   -H "Content-Type: application/json" \
-  -d '{
-    "from_entity": "SUBSTANCE_ID",
-    "to_entity": "flesh_bone_soul",
-    "cause_type": "material"
-  }'
+  -d "{
+    \"from_entity\": \"$SUBSTANCE_ID\",
+    \"to_entity\": \"philosophical_inquiry\",
+    \"cause_type\": \"efficient\"
+  }"
 
-# 4. Create a potentiality
-curl -X POST http://localhost:8080/api/v1/potentialities \
+# 5. Create a potentiality
+POTENTIALITY_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/potentialities \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "Achieve Wisdom",
-    "description": "Socrates can achieve philosophical wisdom",
-    "conditions": "[{\"type\":\"mode\",\"name\":\"virtue\",\"value\":\"courageous\"}]",
-    "substance_id": "SUBSTANCE_ID"
-  }'
+  -d "{
+    \"name\": \"Achieve Wisdom\",
+    \"description\": \"Socrates can achieve philosophical wisdom\",
+    \"conditions\": \"[{\\\"type\\\":\\\"mode\\\",\\\"name\\\":\\\"virtue\\\",\\\"value\\\":\\\"courageous\\\"}]\",
+    \"substance_id\": \"$SUBSTANCE_ID\"
+  }")
 
-# 5. Actualize the potentiality
-curl -X POST http://localhost:8080/api/v1/potentialities/POTENTIALITY_ID/actualize \
+POTENTIALITY_ID=$(echo $POTENTIALITY_RESPONSE | jq -r '.id')
+
+# 6. Check if conditions are met
+curl -X GET http://localhost:8080/api/v1/potentialities/$POTENTIALITY_ID/conditions
+
+# 7. Actualize the potentiality
+curl -X POST http://localhost:8080/api/v1/potentialities/$POTENTIALITY_ID/actualize \
   -H "Content-Type: application/json" \
   -d '{
     "description": "Socrates achieved wisdom through philosophical inquiry"
@@ -233,13 +514,31 @@ make reset-db          # Reset database (CAUTION!)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/health` | Health check |
+| **Substances** | | |
 | `GET` | `/api/v1/substances` | List all substances |
-| `POST` | `/api/v1/substances` | Create substance |
 | `GET` | `/api/v1/substances/:id` | Get substance by ID |
+| `POST` | `/api/v1/substances` | Create substance |
+| `PUT` | `/api/v1/substances/:id` | Update substance |
+| `DELETE` | `/api/v1/substances/:id` | Delete substance |
+| **Kinds** | | |
+| `GET` | `/api/v1/kinds` | List all kinds |
+| `POST` | `/api/v1/kinds` | Create kind |
+| **Attributes** | | |
+| `GET` | `/api/v1/attributes` | List all attributes |
+| `POST` | `/api/v1/attributes` | Create attribute |
+| **Modes** | | |
+| `GET` | `/api/v1/modes` | List all modes |
 | `POST` | `/api/v1/modes` | Create mode |
+| **Causality** | | |
+| `GET` | `/api/v1/substances/:id/causes` | Get causes for substance |
 | `POST` | `/api/v1/causes` | Add causal relation |
+| **Potentialities** | | |
+| `GET` | `/api/v1/potentialities` | List all potentialities |
 | `POST` | `/api/v1/potentialities` | Create potentiality |
+| `GET` | `/api/v1/potentialities/:id/conditions` | Check potentiality conditions |
 | `POST` | `/api/v1/potentialities/:id/actualize` | Actualize potentiality |
+| **Evolution** | | |
+| `GET` | `/api/v1/substances/:id/evolution` | Get substance evolution |
 
 ### GraphQL
 
