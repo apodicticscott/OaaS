@@ -269,7 +269,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Modeled substances, kinds, attributes, and modes with PostgreSQL
 - Built a reasoning engine for potentiality → actuality transitions  
 - Designed REST + GraphQL APIs for querying entities and Aristotelian causes
-- Deployed with Docker; supports real-time WebSocket events
 - Bridges **philosophy and distributed backend design** in a unique way
 
 ---
